@@ -1,0 +1,18 @@
+html
+	head
+		title Fortune
+	body
+	if loggedIn
+		p Your fortune today: #{fortune}
+		p Others' fortune
+		ul
+			each user,index in users
+				li
+					b= user.name
+					|  :  
+					span= user.fortune
+	else
+		p 请使用自己的名字！！！
+		form(action='http://10.147.139.19:9001/',method='post')
+			input(type='text' placeholder='Your name' name='username')
+			input(type='submit')

@@ -1,0 +1,40 @@
+#chart{
+	height:500px;
+	width:450px;
+	display:block;
+	margin:15px auto 0;
+}
+
+#input{
+	height:30px;
+	width:312px;
+	padding:3px 6px;
+	display:block;
+	margin:45px auto 20px;
+	font-size:13pt;
+	font-family:comic sans ms,微软雅黑 light,幼圆,黑体;
+	text-align:center;
+	border-radius:5px;
+	border-style:none;
+	background-color:rgba(60,170,233,0.4);
+	outline:none;
+	color:white;
+}
+
+::-webkit-input-placeholder{
+	color:white
+}
+
+#intro{
+	color: lightgray;
+	display: block;
+	margin: 5px auto;
+	max-width: 200px;
+	text-align: center;
+	font-family: 微软雅黑 Light;
+}
+
+a, a:hover, a:active, a:visited{
+	text-decoration: none;
+	color: lightgray;
+}

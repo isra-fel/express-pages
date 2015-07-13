@@ -1,0 +1,22 @@
+{
+  "name": "express-pages",
+  "version": "1.0.0",
+  "description": "An expressjs server that hosts several pages",
+  "main": "serv.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/isra-fel/express-pages.git"
+  },
+  "keywords": [
+    "expressjs"
+  ],
+  "author": "Felix Liu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/isra-fel/express-pages/issues"
+  },
+  "homepage": "https://github.com/isra-fel/express-pages#readme"
+}
