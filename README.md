@@ -2,6 +2,8 @@
 
 An expressjs server that hosts several pages.
 
+Dependencies: express, jade, cors
+
 ## Characters (2015/7/4)
 
 `/characteristics`
