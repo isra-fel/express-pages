@@ -14,6 +14,10 @@ app.use(logger);
 /* static */
 app.use(express.static(__dirname));
 
+/* index */
+app.use('/', require('./index.router'));
+console.log('index started');
+
 /* apps */
 app.use('/characteristics', require('./06.characteristics.router'));
 console.log('Characteristics started');
