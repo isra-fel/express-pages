@@ -1,7 +1,6 @@
 /// <reference path="typings/node/node.d.ts"/>
 var express = require('express'),
 	app = express(),
-	cors = require('cors'),
 	logger = require('./08.logger');
 
 /* view engine */
