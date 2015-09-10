@@ -1,14 +1,13 @@
-/// <reference path="typings/node/node.d.ts"/>
 var express = require('express'),
 	app = express(),
-	logger = require('./08.logger');
+	morgan = require('morgan');
 
 /* view engine */
 app.set('views', 'views/');
 app.set('view engine', 'jade');
 
 /* logger */
-app.use(logger);
+app.use(morgan('dev'));
 
 /* static */
 app.use(express.static(__dirname));
