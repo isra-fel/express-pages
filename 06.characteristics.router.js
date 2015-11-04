@@ -4,7 +4,7 @@ var express = require('express'),
 	tags = Data.tags,
 	config = Data.config,
 	router = express.Router(),
-	logger = require('./09.single.logger')('Characteristics');
+	logger = require('graceful-logger');
 	
 /* dynamic */
 router.get('/', function (req, res) {
@@ -38,7 +38,7 @@ function getNewRadarData(name) {
 }
 
 function getTags(crc) {
-	logger.log('crc =', crc);
+	logger.info('crc =', crc);
 	var tmpTags = tags.slice(),
 		left = config.typesNum,
 		selected = [];
@@ -48,7 +48,7 @@ function getTags(crc) {
 		crc = Math.floor(crc / (tmpTags.length + 1));
 		--left;
 	}
-	logger.log(selected);
+	logger.info(selected);
 	return selected;
 }
 

@@ -81,4 +81,5 @@ typings/
 media/
 
 # vscode
+.vscode/
 .settings/
