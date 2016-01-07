@@ -1,6 +1,6 @@
 var express = require('express'),
 	CRC32 = require('crc-32'),
-	Data = require('./06.characteristics.data'),
+	Data = require('../data/06.characteristics.data'),
 	tags = Data.tags,
 	config = Data.config,
 	router = express.Router(),
@@ -58,7 +58,7 @@ function getData(crc) {
 		left = config.typesNum,
 		data = [];
 	if (crc < 0) crc = -crc;
-	while (left != 0) {
+	while (left) {
 		data.push(crc % config.maxNum);
 		crc = crc * p1 + p2;
 		--left;

@@ -17,11 +17,14 @@ app.use('/', require('./index.router'));
 console.log('index started');
 
 /* apps */
-app.use('/characteristics', require('./06.characteristics.router'));
+app.use('/characteristics', require('./routes/06.characteristics.router'));
 console.log('Characteristics started');
 
-app.use('/senritu', require('./07.senritu.router'));
+app.use('/senritu', require('./routes/07.senritu.router'));
 console.log('Senritu started');
+
+app.use('/heart', require('./routes/08.heart.router'));
+console.log('Heart started');
 
 /* 404 */
 app.use(function (req, res) {
