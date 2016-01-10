@@ -17,3 +17,15 @@ Dependencies: crc-32, chart.js
 `/senritu`
 
 A page about, well, "deep sea phobia".
+
+## heart (2016/1/8)
+
+`/heart`
+
+A page to test background html5 audio playback
+
+## box (2016/1/11)
+
+`/box`
+
+A socket.IO based chatroom
