@@ -1,14 +1,54 @@
+body {
+    display: flex;
+    height: 100%;
+}
+
+#shoutbox {
+    width: 100%;
+}
+
+.shoutbox {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    width: 800px;
+    height: 100%;
+}
+
+.shout-form {
+    border-bottom: 1px solid #eee;
+    padding: 20px 0;
+}
+
+.shout-list {
+    display: flex;
+    flex-direction: column;
+    height: 70%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    /*width: 800px;*/
+    border-bottom: 1px solid #eee;
+}
+
 .shout {
     display: flex;
 }
 
 .shout .author {
     /*flex-grow: 1;*/
-    width: 5em;
+    /*width: 5em;*/
+    padding-right: 1em;
     color: darkred;
+    display: inline-flex;
 }
 
 .shout .shout-body {
     /*flex-grow: 10;*/
     color: dodgerblue;
+    display: inline-flex;
+    word-break: break-word;
+}
+
+.stat {
+    margin-top: 16px;
 }

@@ -6,17 +6,28 @@ var ShoutBox = React.createClass({
     socket: io(),
     getInitialState: function () {
         return {
-            shouts: []
+            shouts: [],
+            stat: {}
         };
     },
     componentDidMount: function () {
-        this.socket.on('connection', function (res) {
+        this.socket.on('connection', res => {
             this.setState({shouts: res});
             this.socket.off('connection');
-        }.bind(this));
-        this.socket.on('shout', function (shout) {
-            this.setState({shouts: this.state.shouts.concat([shout])})
-        }.bind(this));
+        });
+        this.socket.on('shout', shout => {
+            var maxShouts = this.props.maxShouts || 20;
+            var newShouts;
+            if (this.state.shouts.length >= maxShouts) {
+                newShouts = [shout].concat(this.state.shouts.slice(0, maxShouts - 1));
+            } else {
+                newShouts = [shout].concat(this.state.shouts);
+            }
+            this.setState({shouts: newShouts});
+        });
+        this.socket.on('stat', stat => {
+            this.setState({stat: stat});
+        });
     },
     _onShoutSubmit: function (shout) {
         this.socket.emit('shout', shout);
@@ -24,36 +35,33 @@ var ShoutBox = React.createClass({
     render: function () {
         return (
             <div className="shoutbox">
-                <h1>Hello, world! I am a shoutbox.</h1>
                 <ShoutForm onShoutSubmit={this._onShoutSubmit} />
                 <ShoutList shouts={this.state.shouts} />
+                <Stat stat={this.state.stat} />
             </div>
         );
     }
 });
 
-var ShoutList = React.createClass({
-    _renderShout: function (shout) {
-        return (
-            <Shout author={shout.author} key={shout.id}>{shout.body}</Shout>
-        )
-    },
-    render: function () {
-        return (
-            <div className="shout-list">
-                Hello, world! I am a shout list.
-                {this.props.shouts.map(this._renderShout)}
-            </div>
-        );
-    }
-});
+var ShoutList = props => (
+    <div className="shout-list">
+        {props.shouts.map(function (shout) {
+            return <Shout author={shout.author} key={shout.id}>{shout.body}</Shout>;
+        })}
+    </div>
+);
 
 var ShoutForm = React.createClass({
     getInitialState: function () {
-        return {author: '', body: ''};
+        var localAuthor = (typeof(Storage) !== 'undefined') ?
+            localStorage.getItem('author') : undefined;
+        return {author: localAuthor || '', body: ''};
     },
     _handleAuthorChange: function (e) {
         this.setState({author: e.target.value});
+        if (typeof(Storage) !== 'undefined') {
+            localStorage.setItem('author', e.target.value.trim());
+        }
     },
     _handleShoutBodyChange: function (e) {
         this.setState({body: e.target.value});
@@ -70,41 +78,35 @@ var ShoutForm = React.createClass({
     },
     render: function () {
         return (
-            <form className="shout-form" onSubmit={this._handleSubmit}>
+            <form className="shout-form pure-form" onSubmit={this._handleSubmit}>
                 <input type="text" placeholder="username" value={this.state.author} onChange={this._handleAuthorChange} />
                 <input type="text" placeholder="say something..." value={this.state.body} onChange={this._handleShoutBodyChange} />
-                <input type="submit" value="post" />
+                <input type="submit" value="post" className="pure-button" />
             </form>
         );
     }
 });
 
-var Shout = React.createClass({
-    render: function () {
-        return (
-            <div className="shout">
-                <span className="author">
-                    {this.props.author}
-                </span>
-                <span className="shout-body">
-                    {this.props.children}
-                </span>
-            </div>
-        );
-    }
-});
+var Shout = props => (
+    <div className="shout">
+        <span className="author">
+            {props.author}
+        </span>
+        <div className="shout-body">
+            {props.children}
+        </div>
+    </div>
+);
 
-var shouts = [{
-    author: "Israfel",
-    content: "a shout",
-    id: "A001"
-}, {
-    author: "madao",
-    content: "another shout",
-    id: "A002"
-}];
+var Stat = props => (
+    <div className="stat">
+        <div className="online">
+            当前有{props.stat.online || 0}人在线
+        </div>
+    </div>
+);
 
 ReactDOM.render(
-    <ShoutBox shouts={shouts} />,
+    <ShoutBox maxShouts={40} />,
     document.getElementById('shoutbox')
 );

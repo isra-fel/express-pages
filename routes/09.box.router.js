@@ -2,14 +2,20 @@ module.exports = function (server) {
     var express = require('express'),
         router = express.Router(),
         io = require('socket.io')(server),
-        uuid = require('uuid');
+        uuid = require('uuid'),
+        stat = { online: 0 };
     
     router.get('/', function (req, res) {
         res.render('09.box.jade');
     });
     
+    function refreshStat() {
+        stat.online = io.engine.clientsCount;
+        io.emit('stat', stat);
+    }
+    
     io.on('connection', function (socket) {
-        console.log('a user connected');
+        refreshStat();
         socket.emit('connection', [
             {
                 author: "Israfel",
@@ -21,9 +27,11 @@ module.exports = function (server) {
                 body: " another shout from server"
             }
         ]);
+        
         socket.on('disconnect', function () {
-            console.log('a user disconnected');
+            refreshStat();
         });
+        
         socket.on('shout', function (shout) {
             console.log('received shout:', shout);
             shout.id = uuid.v4();
@@ -33,23 +41,10 @@ module.exports = function (server) {
         });
         setTimeout(function() {
             socket.emit('shout', {
-                    author: "bzfdu",
-                    id: "B001",
-                    body: " what's up"
-                });
-            // setTimeout(function() {
-            //     socket.emit('connection', [
-            //         {
-            //             author: "Israfel",
-            //             id: "I001",
-            //             content: " XD"
-            //         }, {
-            //             author: "madao",
-            //             id: "M001",
-            //             content: " XD"
-            //         }
-            //     ]);
-            // }, 1000);
+                author: "bzfdu",
+                id: "B001",
+                body: " what's up"
+            });
         }, 1000);
     });
     
