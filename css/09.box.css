@@ -1,0 +1,14 @@
+.shout {
+    display: flex;
+}
+
+.shout .author {
+    /*flex-grow: 1;*/
+    width: 5em;
+    color: darkred;
+}
+
+.shout .shout-body {
+    /*flex-grow: 10;*/
+    color: dodgerblue;
+}

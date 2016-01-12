@@ -18,11 +18,14 @@ var ShoutBox = React.createClass({
             this.setState({shouts: this.state.shouts.concat([shout])})
         }.bind(this));
     },
+    _onShoutSubmit: function (shout) {
+        this.socket.emit('shout', shout);
+    },
     render: function () {
         return (
             <div className="shoutbox">
                 <h1>Hello, world! I am a shoutbox.</h1>
-                <ShoutForm />
+                <ShoutForm onShoutSubmit={this._onShoutSubmit} />
                 <ShoutList shouts={this.state.shouts} />
             </div>
         );
@@ -32,7 +35,7 @@ var ShoutBox = React.createClass({
 var ShoutList = React.createClass({
     _renderShout: function (shout) {
         return (
-            <Shout author={shout.author} key={shout.id}>{shout.content}</Shout>
+            <Shout author={shout.author} key={shout.id}>{shout.body}</Shout>
         )
     },
     render: function () {
@@ -46,14 +49,30 @@ var ShoutList = React.createClass({
 });
 
 var ShoutForm = React.createClass({
+    getInitialState: function () {
+        return {author: '', body: ''};
+    },
+    _handleAuthorChange: function (e) {
+        this.setState({author: e.target.value});
+    },
+    _handleShoutBodyChange: function (e) {
+        this.setState({body: e.target.value});
+    },
+    _handleSubmit: function (e) {
+        e.preventDefault();
+        var author = this.state.author.trim(),
+            body = this.state.body.trim();
+        if (!author || !body) {
+            return;
+        }
+        this.props.onShoutSubmit({author: author, body: body});
+        this.setState({body: ''});
+    },
     render: function () {
         return (
-            <div className="shout-form">
-                Hello, world! I am a shout form.
-            </div>
-            <form className="shout-form">
-                <input type="text" placeholder="username" />
-                <input type="text" placeholder="say something..." />
+            <form className="shout-form" onSubmit={this._handleSubmit}>
+                <input type="text" placeholder="username" value={this.state.author} onChange={this._handleAuthorChange} />
+                <input type="text" placeholder="say something..." value={this.state.body} onChange={this._handleShoutBodyChange} />
                 <input type="submit" value="post" />
             </form>
         );
