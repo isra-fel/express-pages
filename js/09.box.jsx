@@ -58,13 +58,21 @@ var ShoutForm = React.createClass({
         return {author: localAuthor || '', body: ''};
     },
     _handleAuthorChange: function (e) {
-        this.setState({author: e.target.value});
+        var newAuthor = e.target.value;
+        if (newAuthor.length > 12) {
+            newAuthor = newAuthor.substr(0, 12);
+        }
+        this.setState({author: newAuthor.trim()});
         if (typeof(Storage) !== 'undefined') {
-            localStorage.setItem('author', e.target.value.trim());
+            localStorage.setItem('author', newAuthor.trim());
         }
     },
     _handleShoutBodyChange: function (e) {
-        this.setState({body: e.target.value});
+        var newBody = e.target.value;
+        if (newBody.length > 140) {
+            newBody = newBody.substr(0, 140);
+        }
+        this.setState({body: newBody.trim()});
     },
     _handleSubmit: function (e) {
         e.preventDefault();
@@ -79,9 +87,9 @@ var ShoutForm = React.createClass({
     render: function () {
         return (
             <form className="shout-form pure-form" onSubmit={this._handleSubmit}>
-                <input type="text" placeholder="username" value={this.state.author} onChange={this._handleAuthorChange} />
-                <input type="text" placeholder="say something..." value={this.state.body} onChange={this._handleShoutBodyChange} />
-                <input type="submit" value="post" className="pure-button" />
+                <input type="text" className="input-shout-author" placeholder={nls.get('name')} value={this.state.author} onChange={this._handleAuthorChange} />
+                <input type="text" className="input-shout-body" placeholder={nls.get('saySomething')} value={this.state.body} onChange={this._handleShoutBodyChange} />
+                <input type="submit" className="input-shout-submit pure-button" value={nls.get('post')} />
             </form>
         );
     }
@@ -101,10 +109,37 @@ var Shout = props => (
 var Stat = props => (
     <div className="stat">
         <div className="online">
-            当前有{props.stat.online || 0}人在线
+            <small>{nls.get('online').replace('_{0}', props.stat.online || 0)}</small>
+        </div>
+        <div className="about">
+            <small>powered by <a href="http://weibo.com/whynotme">@Israfel</a></small>
         </div>
     </div>
 );
+
+var nls = {
+    zhcn: {
+        name: "名字",
+        saySomething: "说些什么吧……",
+        post: "发送",
+        online: "当前有_{0}人在线"
+    },
+    enus: {
+        name: "name",
+        saySomething: "say something...",
+        post: "post",
+        online: "_{0} guys online"
+    },
+    get: function(name) {
+        switch (navigator.language) {
+            case 'zh-CN':
+                return this.zhcn[name];
+            case 'en-US':
+            default:
+                return this.enus[name];
+        }
+    }
+};
 
 ReactDOM.render(
     <ShoutBox maxShouts={40} />,

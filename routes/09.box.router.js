@@ -33,10 +33,10 @@ module.exports = function (server) {
         });
         
         socket.on('shout', function (shout) {
-            console.log('received shout:', shout);
+            // console.log('received shout:', shout);
             shout.id = uuid.v4();
             //todo: save it in db
-            console.log('broadcasting shout:', shout);
+            // console.log('broadcasting shout:', shout);
             io.emit('shout', shout);
         });
         setTimeout(function() {

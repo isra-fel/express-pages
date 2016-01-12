@@ -11,13 +11,34 @@ body {
     display: flex;
     flex-direction: column;
     margin: 0 auto;
-    width: 800px;
+    width: 70%;
+    max-width: 800px;
     height: 100%;
 }
 
 .shout-form {
     border-bottom: 1px solid #eee;
     padding: 20px 0;
+    display: flex;
+    justify-content: space-around;
+}
+
+.shout-form input {
+    height: 35px;
+}
+
+.input-shout-author {
+    width: 6em;
+}
+
+.input-shout-body {
+    /*margin-left: 1em;*/
+    width: 25em;
+}
+
+.input-shout-submit {
+    width: 6em;
+    /*margin-left: 1em;*/
 }
 
 .shout-list {
@@ -26,8 +47,8 @@ body {
     height: 70%;
     overflow-y: auto;
     overflow-x: hidden;
-    /*width: 800px;*/
     border-bottom: 1px solid #eee;
+    padding: 16px 0;
 }
 
 .shout {
@@ -51,4 +72,6 @@ body {
 
 .stat {
     margin-top: 16px;
+    display: flex;
+    justify-content: space-between;
 }
