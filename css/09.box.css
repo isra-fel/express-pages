@@ -24,7 +24,7 @@ body {
 }
 
 .shout-form input {
-    height: 35px;
+    height: 38px;
 }
 
 .input-shout-author {
@@ -65,9 +65,9 @@ body {
 
 .shout .shout-body {
     /*flex-grow: 10;*/
-    color: dodgerblue;
+    color: cornflowerblue;
     display: inline-flex;
-    word-break: break-word;
+    word-break: break-all;
 }
 
 .stat {

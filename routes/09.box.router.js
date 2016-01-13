@@ -3,50 +3,75 @@ module.exports = function (server) {
         router = express.Router(),
         io = require('socket.io')(server),
         uuid = require('uuid'),
-        stat = { online: 0 };
+        stat = { online: 0 },
+        Shout;
     
-    router.get('/', function (req, res) {
-        res.render('09.box.jade');
-    });
+    initDB();
+    initIO();
+    initRouter();
+    return router;
     
     function refreshStat() {
         stat.online = io.engine.clientsCount;
         io.emit('stat', stat);
     }
     
-    io.on('connection', function (socket) {
-        refreshStat();
-        socket.emit('connection', [
-            {
-                author: "Israfel",
-                id: "I001",
-                body: " a shout from server"
-            }, {
-                author: "madao",
-                id: "M001",
-                body: " another shout from server"
-            }
-        ]);
-        
-        socket.on('disconnect', function () {
-            refreshStat();
-        });
-        
-        socket.on('shout', function (shout) {
-            // console.log('received shout:', shout);
-            shout.id = uuid.v4();
-            //todo: save it in db
-            // console.log('broadcasting shout:', shout);
-            io.emit('shout', shout);
-        });
-        setTimeout(function() {
-            socket.emit('shout', {
-                author: "bzfdu",
-                id: "B001",
-                body: " what's up"
-            });
-        }, 1000);
-    });
+    // cb: function (err, shouts)
+    function getLatestShouts(cb) {
+        if (Shout) {
+            Shout.find({}, '_id author body', {
+                limit: 40
+            }, cb);
+        } else {
+            console.error('No Shout schema');
+            cb(null, []);
+        }
+    }
     
-    return router;
+    
+    function initDB() {
+        var mongoose = require('mongoose');
+        mongoose.connect('mongodb://localhost/shout');
+        require('../models/09.box.model.js');
+        Shout = mongoose.model('Shout');
+    }
+    
+    function initRouter() {
+        router.get('/', function (req, res) {
+            res.render('09.box.jade');
+        });
+    }
+    
+    function initIO() {
+        io.on('connection', function (socket) {
+            refreshStat();
+            
+            getLatestShouts(function (err, shouts) {
+                socket.emit('connection', err ? [] : shouts);
+            });
+            
+            socket.on('disconnect', function () {
+                refreshStat();
+            });
+            
+            socket.on('shout', function (shout) {
+                // console.log('received shout:', shout);
+                var shoutInstance = new Shout({
+                    author: shout.author,
+                    body: shout.body,
+                    ip: socket.conn.remoteAddress
+                });
+                shoutInstance.save(function (err) {
+                    if (err) {
+                        console.error('Error saving shout: ' +
+                            JSON.stringify(shout));
+                    } else {
+                        shout.id = uuid.v4();
+                        // console.log('broadcasting shout:', shout);
+                        io.emit('shout', shout);      
+                    }
+                })
+            });
+        });
+    }
 };

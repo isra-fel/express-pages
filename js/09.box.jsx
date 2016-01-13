@@ -1,7 +1,4 @@
 /* global io */
-// var socket = io();
-// socket.emit('private message', { key: "value" });
-
 var ShoutBox = React.createClass({
     socket: io(),
     getInitialState: function () {
@@ -11,8 +8,9 @@ var ShoutBox = React.createClass({
         };
     },
     componentDidMount: function () {
-        this.socket.on('connection', res => {
-            this.setState({shouts: res});
+        this.socket.on('connection', latestShouts => {
+            // order!
+            this.setState({shouts: latestShouts.reverse()});
             this.socket.off('connection');
         });
         this.socket.on('shout', shout => {
@@ -72,7 +70,8 @@ var ShoutForm = React.createClass({
         if (newBody.length > 140) {
             newBody = newBody.substr(0, 140);
         }
-        this.setState({body: newBody.trim()});
+        // do not do trim here!
+        this.setState({body: newBody});
     },
     _handleSubmit: function (e) {
         e.preventDefault();
