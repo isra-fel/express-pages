@@ -19,9 +19,11 @@ module.exports = function (server) {
     // cb: function (err, shouts)
     function getLatestShouts(cb) {
         if (Shout) {
-            Shout.find({}, '_id author body', {
-                limit: 40
-            }, cb);
+            Shout.find({}, '_id author body')
+                .sort('-_id')//sort by _id reversely
+                .limit(40)
+                .lean()
+                .exec(cb);
         } else {
             console.error('No Shout schema');
             cb(null, []);
@@ -61,14 +63,17 @@ module.exports = function (server) {
                     body: shout.body,
                     ip: socket.conn.remoteAddress
                 });
-                shoutInstance.save(function (err) {
+                shoutInstance.save(function (err, savedShout) {
                     if (err) {
                         console.error('Error saving shout: ' +
                             JSON.stringify(shout));
                     } else {
-                        shout.id = uuid.v4();
-                        // console.log('broadcasting shout:', shout);
-                        io.emit('shout', shout);      
+                        var retShout = {
+                            _id: savedShout._id,
+                            author: savedShout.author,
+                            body: savedShout.body
+                        };
+                        io.emit('shout', retShout);      
                     }
                 })
             });

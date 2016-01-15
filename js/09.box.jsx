@@ -9,8 +9,7 @@ var ShoutBox = React.createClass({
     },
     componentDidMount: function () {
         this.socket.on('connection', latestShouts => {
-            // order!
-            this.setState({shouts: latestShouts.reverse()});
+            this.setState({shouts: latestShouts});
             this.socket.off('connection');
         });
         this.socket.on('shout', shout => {
@@ -44,7 +43,7 @@ var ShoutBox = React.createClass({
 var ShoutList = props => (
     <div className="shout-list">
         {props.shouts.map(function (shout) {
-            return <Shout author={shout.author} key={shout.id}>{shout.body}</Shout>;
+            return <Shout author={shout.author} key={shout._id}>{shout.body}</Shout>;
         })}
     </div>
 );
