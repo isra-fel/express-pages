@@ -43,7 +43,8 @@ var ShoutBox = React.createClass({
 var ShoutList = props => (
     <div className="shout-list">
         {props.shouts.map(function (shout) {
-            return <Shout author={shout.author} key={shout._id}>{shout.body}</Shout>;
+            var { _id, ...other } = shout;
+            return <Shout {...other} key={_id}>{shout.body}</Shout>;
         })}
     </div>
 );
@@ -94,7 +95,7 @@ var ShoutForm = React.createClass({
 });
 
 var Shout = props => (
-    <div className="shout">
+    <div className="shout" style={{color: props.idColor}}>
         <span className="author">
             {props.author}
         </span>

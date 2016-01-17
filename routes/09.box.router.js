@@ -2,7 +2,7 @@ module.exports = function (server) {
     var express = require('express'),
         router = express.Router(),
         io = require('socket.io')(server),
-        uuid = require('uuid'),
+        // uuid = require('uuid'),
         stat = { online: 0 },
         Shout;
     
@@ -19,10 +19,10 @@ module.exports = function (server) {
     // cb: function (err, shouts)
     function getLatestShouts(cb) {
         if (Shout) {
-            Shout.find({}, '_id author body')
+            Shout.find({}, '_id author body idColor')
                 .sort('-_id')//sort by _id reversely
                 .limit(40)
-                .lean()
+                // .lean()
                 .exec(cb);
         } else {
             console.error('No Shout schema');
@@ -66,12 +66,15 @@ module.exports = function (server) {
                 shoutInstance.save(function (err, savedShout) {
                     if (err) {
                         console.error('Error saving shout: ' +
-                            JSON.stringify(shout));
+                            JSON.stringify(shout) +
+                            '\nmessage: ' +
+                            err.message);
                     } else {
                         var retShout = {
                             _id: savedShout._id,
                             author: savedShout.author,
-                            body: savedShout.body
+                            body: savedShout.body,
+                            idColor: savedShout.idColor
                         };
                         io.emit('shout', retShout);      
                     }
