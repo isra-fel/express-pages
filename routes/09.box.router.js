@@ -2,7 +2,9 @@ module.exports = function (server) {
     var express = require('express'),
         router = express.Router(),
         io = require('socket.io')(server),
-        // uuid = require('uuid'),
+        Log = require('log'),
+        fs = require('fs'),
+        log = new Log('debug', fs.createWriteStream('./log/09.box.log', { flags: 'a' })),
         stat = { online: 0 },
         Shout;
     
@@ -14,6 +16,7 @@ module.exports = function (server) {
     function refreshStat() {
         stat.online = io.engine.clientsCount;
         io.emit('stat', stat);
+        log.info('Now %s online.', stat.online);
     }
     
     // cb: function (err, shouts)
@@ -46,18 +49,22 @@ module.exports = function (server) {
     
     function initIO() {
         io.on('connection', function (socket) {
+            log.info('A user connected.');
+            
             refreshStat();
             
             getLatestShouts(function (err, shouts) {
                 socket.emit('connection', err ? [] : shouts);
+                log.info('%s shouts transmitted.', shouts.length);
             });
             
             socket.on('disconnect', function () {
+                log.info('A user disconnected.');
                 refreshStat();
             });
             
             socket.on('shout', function (shout) {
-                // console.log('received shout:', shout);
+                log.info('A shout received.');
                 var shoutInstance = new Shout({
                     author: shout.author,
                     body: shout.body,
@@ -65,7 +72,7 @@ module.exports = function (server) {
                 });
                 shoutInstance.save(function (err, savedShout) {
                     if (err) {
-                        console.error('Error saving shout: ' +
+                        log.error('Error saving shout: ' +
                             JSON.stringify(shout) +
                             '\nmessage: ' +
                             err.message);
@@ -77,6 +84,7 @@ module.exports = function (server) {
                             idColor: savedShout.idColor
                         };
                         io.emit('shout', retShout);      
+                        log.info('Shout broadcasted');
                     }
                 })
             });
