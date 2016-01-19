@@ -22,7 +22,7 @@ module.exports = function (server) {
     // cb: function (err, shouts)
     function getLatestShouts(cb) {
         if (Shout) {
-            Shout.find({}, '_id author body idColor')
+            Shout.find({}, '_id author ip body idColor')
                 .sort('-_id')//sort by _id reversely
                 .limit(40)
                 // .lean()

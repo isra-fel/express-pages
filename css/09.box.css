@@ -28,16 +28,18 @@ body {
 }
 
 .input-shout-author {
-    width: 6em;
+    width: 8em;
 }
 
 .input-shout-body {
     /*margin-left: 1em;*/
     width: 25em;
+    flex-grow: 1;
+    margin: 0 2em;
 }
 
 .input-shout-submit {
-    width: 6em;
+    width: 8em;
     /*margin-left: 1em;*/
 }
 
