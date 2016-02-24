@@ -60,7 +60,7 @@ var ShoutForm = React.createClass({
         if (newAuthor.length > 12) {
             newAuthor = newAuthor.substr(0, 12);
         }
-        this.setState({author: newAuthor.trim()});
+        this.setState({author: newAuthor});
         if (typeof(Storage) !== 'undefined') {
             localStorage.setItem('author', newAuthor.trim());
         }
