@@ -36,6 +36,6 @@ app.use(function (req, res) {
 	res.render('404');
 });
 
-server.listen(80, function() {
-	console.log('Server started @ port 80');
+server.listen(880, function() {
+	console.log('Server started @ port 880');
 });
